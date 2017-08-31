@@ -1,9 +1,14 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
+#include <set>
+#include <random>
 
 auto queen = "\u265B";
 auto boardSize = 8;
+auto validOptions = std::set<int>{0, 1, 2, 3, 4, 5, 6, 7};
+std::random_device rd;
+std::mt19937 randomGen(rd());
+
 
 /*
   board
@@ -14,7 +19,7 @@ auto boardSize = 8;
 */
 using boardType = std::vector<int>;
 
-void printBoard(boardType board) {
+void printBoard(const boardType &board) {
   auto line = "+---+---+---+---+---+---+---+---+";
 
   for (auto rowPosition: board) {
@@ -49,20 +54,52 @@ boardType createBoard() {
     6 if not, remove spot return false (go to two)
     7 return result of recursion on next row 
 */
-void recursiveSolver() {
-  auto board = createBoard();
-  doRecurse(&board, 0);
-  printBoard(board);
+bool doRecurse(boardType &board, int index, int &stepCounter) {
+  stepCounter++;
+  auto takenValues = std::set<int>{};
+
+  for (int i = 0; i < index; i++) {
+    auto diff = index - i;
+    auto value = board.at(i);
+    takenValues.insert(value);
+    takenValues.insert(value + diff);
+    takenValues.insert(value - diff);
+  }
+
+  std::vector<int> remainingOptions;
+  std::set_difference(
+    validOptions.begin(), validOptions.end(),
+    takenValues.begin(), takenValues.end(),
+    std::inserter(remainingOptions, remainingOptions.begin())
+  );
+
+  std::shuffle(remainingOptions.begin(), remainingOptions.end(), randomGen);
+
+  for(auto option : remainingOptions) {
+    board[index] = option;
+
+    if (index == boardSize - 1 || doRecurse(board, index + 1, stepCounter)) {
+      return true;
+    }
+
+    board[index] = -1;
+  }
+
+  return false;
 }
 
-bool doRecurse(boardType &board, int index) {
-
+int recursiveSolver() {
+  auto board = createBoard();
+  auto stepCounter = 0;
+  doRecurse(board, 0, stepCounter);
+  printBoard(board);
+  return stepCounter;
 }
 
 
 int main () {
-  recursiveSolver();
-
-  char a;
-  std::cin >> a;
+  for (int i = 0; i < 20; i++) {
+    auto stepCounter = recursiveSolver();
+    std::cout << "Steps: " << stepCounter << '\n';
+  }
 }
