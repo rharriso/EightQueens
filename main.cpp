@@ -1,7 +1,9 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 auto queen = "\u265B";
+auto boardSize = 8;
 
 /*
   board
@@ -10,10 +12,31 @@ auto queen = "\u265B";
     move piece
     print board
 */
-using boardType = std::vector<uint>;
+using boardType = std::vector<int>;
 
 void printBoard(boardType board) {
+  auto line = "+---+---+---+---+---+---+---+---+";
 
+  for (auto rowPosition: board) {
+    std::cout << '\n' << line << '\n';
+
+    for(auto i = 0; i < boardSize; i++) {
+      std::cout << "| ";
+
+      if(i == rowPosition) {
+        std::cout << queen << ' ';
+      } else {
+        std::cout << "  ";
+      }
+    }
+    std::cout << '|';
+  }
+  
+  std::cout << '\n' << line << '\n';
+}
+
+boardType createBoard() {
+  return boardType{ -1, -1, -1, -1, -1, -1, -1, -1 };
 }
 
 /* 
@@ -26,17 +49,20 @@ void printBoard(boardType board) {
     6 if not, remove spot return false (go to two)
     7 return result of recursion on next row 
 */
+void recursiveSolver() {
+  auto board = createBoard();
+  doRecurse(&board, 0);
+  printBoard(board);
+}
+
+bool doRecurse(boardType &board, int index) {
+
+}
 
 
 int main () {
-  auto board = boardType{0, 0, 0, 0, 0, 0, 0, 0};
+  recursiveSolver();
 
-  for (auto i = 0; i < board.size(); i++) {
-    board[i] = i;
-  }
-  
-  for (auto i = 0; i < board.size(); i++) {
-    std::cout << queen  << ' ';
-  }
-  std::cout << '\n';
+  char a;
+  std::cin >> a;
 }
