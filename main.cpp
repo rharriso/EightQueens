@@ -11,14 +11,13 @@ std::mt19937 randomGen(rd());
 
 
 /*
-  board
-    add piece at
-    remove piece at
-    move piece
-    print board
+  board indicates position of queen in a row
 */
 using boardType = std::vector<int>;
 
+/**
+ * print out a board with queen character
+ */ 
 void printBoard(const boardType &board) {
   auto line = "+---+---+---+---+---+---+---+---+";
 
@@ -88,18 +87,23 @@ bool doRecurse(boardType &board, int index, int &stepCounter) {
   return false;
 }
 
-int recursiveSolver() {
-  auto board = createBoard();
+/**
+ * kick off recursive solver
+ */
+int recursiveSolver(boardType &board) {
   auto stepCounter = 0;
   doRecurse(board, 0, stepCounter);
-  printBoard(board);
   return stepCounter;
 }
 
+/**
+ * ren
+ */
 
 int main () {
-  for (int i = 0; i < 20; i++) {
-    auto stepCounter = recursiveSolver();
-    std::cout << "Steps: " << stepCounter << '\n';
-  }
+  std::cout << "Recursive Solver: " << '\n';
+  auto board = createBoard();
+  auto stepCounter = recursiveSolver(board);
+  printBoard(board);
+  std::cout << "Steps: " << stepCounter << '\n';
 }
